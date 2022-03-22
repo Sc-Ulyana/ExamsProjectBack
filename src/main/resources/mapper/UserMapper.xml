@@ -29,8 +29,8 @@
         insert into users(login, password, faculty_id, role_id)
         values (#{login}, #{password}, #{faculty.id}, #{role.id})
     </insert>
-    <update id="updatePassByLogin" parameterType="com.example.springapp.model.User">
-        UPDATE project.users
+    <update id="updatePassByLogin" parameterType="com.example.examsprojectback.domain.User">
+        UPDATE users
         SET password = #{password}
         WHERE login = #{login}
     </update>

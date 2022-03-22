@@ -29,7 +29,7 @@ public class ApplicantController {
 
     @GetMapping("/applicants/{id}")
     public int getApplicantId(@PathVariable int id) {
-        return applicantService.getUserIdByApplicantId(id);
+        return applicantService.getApplicantIdByUserId(id);
     }
 
     @GetMapping("/applicant/{applicantId}")

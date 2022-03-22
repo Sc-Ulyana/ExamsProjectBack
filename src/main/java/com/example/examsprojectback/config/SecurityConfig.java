@@ -47,10 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // Our public endpoints
                 .antMatchers("/swagger-ui.html#/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/auth").permitAll()
-                .antMatchers(HttpMethod.GET, "/validate").permitAll()
-  //              .antMatchers(HttpMethod.POST, "/users/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/applicant/").fullyAuthenticated()
+                .antMatchers(HttpMethod.GET, "/applicants/**").fullyAuthenticated()
                 .antMatchers(HttpMethod.PUT,"/changePassword/").fullyAuthenticated();
         // Our private endpoints
         // .anyRequest().authenticated();
