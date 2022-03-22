@@ -1,0 +1,83 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.ApplicantMapper">
+    <select id="selectAllApplicants" resultType="com.example.examsprojectback.domain.Applicant">
+        select *
+        from applicants
+    </select>
+    <select id="selectUserIdByApplicantId" resultType="int">
+        select user_id
+        from applicants
+        where id = #{applicantId}
+    </select>
+
+    <select id="selectApplicantIdByUserId" resultType="int">
+        select id
+        from applicants
+        where user_id = #{userId};
+    </select>
+
+    <select id="selectApplicantById" resultType="com.example.examsprojectback.domain.Applicant">
+        select *
+        from applicants
+        where id = #{applicantId}
+    </select>
+
+    <select id="selectApplicantByUserId" resultType="com.example.examsprojectback.domain.Applicant">
+        select *
+        from applicants
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectApplicantsByFacultyId" resultType="com.example.examsprojectback.domain.Applicant">
+        select a.id, a.name, a.surname, a.avg_mark
+        from applicants a
+                 left join users u on u.id = a.user_id
+                 left join faculties f on u.faculty_id = f.id
+        where faculty_id = #{facultyId}
+    </select>
+
+    <select id="selectApplicantByExamResultId" resultType="com.example.examsprojectback.domain.Applicant">
+        select a.id, a.name, a.surname, avg_mark
+        from  exams_results er
+                  left join applicants a on er.applicant_id = a.id
+        where er.id = #{id}
+    </select>
+
+    <select id="selectTopApplicantsByFacultyId" resultType="com.example.examsprojectback.domain.Applicant">
+        select a.id, a.name, a.surname, a.avg_mark
+        from applicants a
+                 left join users u on u.id = a.user_id
+                 left join faculties f on u.faculty_id = f.id
+        where faculty_id = #{facultyId} and a.avg_mark > 0
+        limit 4;
+    </select>
+
+    <insert id="insertApplicant" parameterType="com.example.examsprojectback.domain.Applicant">
+        insert into applicants(name, surname, avg_mark, user_id)
+        values (#{name}, #{surname}, #{averageMark}, #{user.id})
+    </insert>
+
+    <update id="updateApplicant" parameterType="com.example.examsprojectback.domain.Applicant">
+        update applicants
+        set name=#{name},
+            surname=#{surname},
+            avg_mark=#{averageMark},
+            user_id=#{user.id}
+        where id = #{id}
+    </update>
+
+    <update id="updateApplicantAvgMark" parameterType="com.example.examsprojectback.domain.Applicant">
+        update applicants
+        set avg_mark = (select round(avg(mark), 2)
+                        from exams_results
+                        where applicant_id = #{id}) where id = #{id}
+    </update>
+
+    <delete id="deleteApplicant">
+        delete
+        from applicants
+        where id = #{applicantId}
+    </delete>
+</mapper>

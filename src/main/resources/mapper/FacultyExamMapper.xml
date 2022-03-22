@@ -1,0 +1,62 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.FacultyExamMapper">
+    <select id="selectAllFacultyExams" resultType="com.example.examsprojectback.domain.FacultyExam">
+        select *
+        from faculties_exams;
+    </select>
+    <select id="selectFacultyExamByUserId" resultType="com.example.examsprojectback.domain.FacultyExam">
+        select ef.id, ef.faculty_id, ef.exam_id
+        from faculties_exams ef
+                 left join users u on ef.faculty_id = u.faculty_id
+        where u.id = #{userId}
+    </select>
+    <select id="selectFacultyExamById" resultType="com.example.examsprojectback.domain.FacultyExam">
+        select ef.id, ef.faculty_id, ef.exam_id
+        from faculties_exams ef
+        where id = #{id}
+    </select>
+    <select id="selectFacultyExamByResultId" resultType="com.example.examsprojectback.domain.FacultyExam">
+        select ef.id, ef.exam_id, ef.faculty_id
+        from  exams_results er
+                  left join faculties_exams  ef on er.faculties_exams_id = ef.id
+        where er.id = #{id}
+    </select>
+    <select id="selectNotPassedExamsByApplicantId" resultType="com.example.examsprojectback.domain.FacultyExam">
+        select ef.id, ef.exam_id, ef.faculty_id
+        from applicants
+                 left join users u on u.id = applicants.user_id
+                 left join faculties_exams ef on u.faculty_id = ef.faculty_id
+        where not exists(
+                select *
+                from exams_results
+                where ef.id = faculties_exams_id
+                  and applicant_id = #{applicant.id}
+            )
+          and applicants.id = #{applicant.id}
+    </select>
+    <insert id="insertFacultyExam" parameterType="com.example.examsprojectback.domain.FacultyExam">
+        insert into faculties_exams(exam_id, faculty_id)
+        values (#{exam_id}, #{faculty_id})
+    </insert>
+    <select id="selectFacultyExamByApplicantId" resultType="com.example.examsprojectback.domain.Exam">
+        select ef.id, ef.faculty_id, ef.exam_id
+        from faculties_exams ef
+                 left join exams e on e.id = ef.exam_id
+                 left outer join users u on ef.faculty_id = u.faculty_id
+                 left join applicants a on u.id = a.user_id
+        where a.id = #{applicantId}
+    </select>
+    <update id="updateFacultyExam" parameterType="com.example.examsprojectback.domain.FacultyExam">
+        update faculties_exams
+        set exam_id=#{exam.id},
+            faculty_id = #{facultyId}
+        where id = #{facultyExamId}
+    </update>
+    <delete id="deleteFacultyExam">
+        delete
+        from faculties_exams
+        where id = #{facultyExamId}
+    </delete>
+</mapper>

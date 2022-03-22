@@ -1,0 +1,54 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.ResultMapper">
+    <select id="selectAllResults" resultType="com.example.examsprojectback.domain.Result">
+        select *
+        from exams_results;
+    </select>
+    <select id="selectResultsByUserId" resultType="com.example.examsprojectback.domain.Result">
+        select er.id, er.faculties_exams_id, er.applicant_id, er.teacher_id, mark
+        from exams_results er
+                 left join applicants a on a.id = er.applicant_id
+                 left join users u on u.id = a.user_id
+        where u.id = #{userId}
+    </select>
+    <select id="selectResultsByApplicantId" resultType="com.example.examsprojectback.domain.Result">
+        select er.id, er.faculties_exams_id, er.applicant_id, er.teacher_id, mark
+        from exams_results er
+                 left join applicants a on a.id = er.applicant_id
+        where a.id = #{applicantId}
+    </select>
+    <select id="selectResultById" resultType="com.example.examsprojectback.domain.Result">
+        select er.id, er.faculties_exams_id, er.applicant_id, er.teacher_id, mark
+        from exams_results er
+        where er.id = #{resultId}
+    </select>
+    <select id="selectCountOfApplicantResults" resultType="int">
+        select count(id)
+        from exams_results
+        where applicant_id = #{applicant.id};
+    </select>
+    <select id="selectApplicantAvgMark" resultType="double">
+        select avg(mark)
+        from exams_results
+        where applicant_id = #{applicant.id};
+    </select>
+    <insert id="insertResult" parameterType="com.example.examsprojectback.domain.Result">
+        insert into exams_results(applicant_id, faculties_exams_id, teacher_id, mark)
+        values (#{applicant.id}, #{facultyExam.id}, #{teacher.id}, #{mark})
+    </insert>
+    <update id="updateResult" parameterType="com.example.examsprojectback.domain.Result">
+        update exams_results
+        set applicant_id       = #{applicant.id},
+            faculties_exams_id = #{facultyExam.id},
+            teacher_id         = #{teacher.id},
+            mark               = #{mark}
+        where id = #{id}
+    </update>
+    <delete id="deleteResult">
+        delete
+        from exams_results
+        where id = #{resultId}
+    </delete>
+</mapper>

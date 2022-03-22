@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.ExamMapper">
+    <select id="selectAllExams" resultType="com.example.examsprojectback.domain.Exam">
+        select *
+        from exams
+    </select>
+    <select id="selectExamById" resultType="com.example.examsprojectback.domain.Exam">
+        select *
+        from exams
+        where id ={examId}
+    </select>
+    <select id="selectExamByUserId" resultType="com.example.examsprojectback.domain.Exam">
+        select e.id, e.name
+        from exams e
+                 right join faculties_exams ef on e.id = ef.exam_id
+                 right join users u on ef.faculty_id = u.faculty_id
+        where u.id={userId}
+    </select>
+    <select id="selectExamByExamFacultyId" resultType="com.example.examsprojectback.domain.Exam">
+        select e.id, e.name
+        from exams e
+                 right join faculties_exams fe on e.id = fe.exam_id
+        where fe.id = #{facultyExam.id}
+    </select>
+    <insert id="insertExam">
+        insert into exams(name)
+        values (#{name})
+    </insert>
+    <update id="updateExam" parameterType="com.example.examsprojectback.domain.Exam">
+        update exams
+        set name = #{name}
+        where id ={examId}
+    </update>
+    <delete id="deleteExam">
+        delete
+        from exams
+        where id = #{examId}
+    </delete>
+</mapper>

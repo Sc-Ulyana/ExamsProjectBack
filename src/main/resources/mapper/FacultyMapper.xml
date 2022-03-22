@@ -1,0 +1,45 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.FacultyMapper">
+    <select id="selectAllFaculties" resultType="com.example.examsprojectback.domain.Faculty">
+        select *
+        from faculties;
+    </select>
+    <select id="selectFacultyByUserId" resultType="com.example.examsprojectback.domain.Faculty">
+        select f.id, f.name, f.description
+        from faculties f
+                 left join users u on f.id = u.faculty_id
+        where u.id = #{userId}
+    </select>
+    <select id="selectFacultyByName">
+        select *
+        from faculties
+        where name = #{facultyName}
+    </select>
+    <select id="selectFacultyById" resultType="com.example.examsprojectback.domain.Faculty">
+        select *
+        from faculties
+        where id = #{facultyId}
+    </select>
+    <select id="selectFacultyByExamFacultyId" resultType="com.example.examsprojectback.domain.Faculty">
+        select f.id, f.name, f.description
+        from faculties f
+                 right join faculties_exams fe on f.id = fe.faculty_id
+        where fe.id = #{facultyExam.id}
+    </select>
+    <insert id="insertFaculty" parameterType="com.example.examsprojectback.domain.Faculty">
+        insert into faculties(name)
+        values (#{name})
+    </insert>
+    <update id="updateFaculty" parameterType="com.example.examsprojectback.domain.Faculty">
+        update faculties
+        set name=#{name}
+        where id = #{facultyId}
+    </update>
+    <delete id="deleteFaculty">
+        delete
+        from faculties
+        where id = #{facultyId}
+    </delete>
+</mapper>

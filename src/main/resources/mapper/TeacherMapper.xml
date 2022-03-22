@@ -1,0 +1,68 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examsprojectback.mapper.TeacherMapper">
+    <select id="selectAllTeachers" resultType="com.example.examsprojectback.domain.Teacher">
+        select *
+        from teachers
+    </select>
+    <select id="selectUserIdByTeacherId" resultType="int">
+        select user_id
+        from teachers
+        where id = #{teacherId}
+    </select>
+
+    <select id="selectTeacherIdByUserId" resultType="int">
+        select id
+        from teachers
+        where user_id = #{userId};
+    </select>
+
+    <select id="selectTeacherByUserId" resultType="com.example.examsprojectback.domain.Teacher">
+        select t.id, t.name, t.fname, t.surname
+        from teachers t
+        where user_id = #{userId};
+    </select>
+
+    <select id="selectTeacherById" resultType="com.example.examsprojectback.domain.Teacher">
+        select t.id, t.name, t.fname, t.surname
+        from teachers t
+        where id = #{id};
+    </select>
+
+
+    <select id="selectTeacherByFacultyId" resultType="com.example.examsprojectback.domain.Teacher">
+        select t.id, t.name, t.fname, t.surname
+        from teachers t
+                 left join users u on u.id = t.user_id
+                 left join faculties f on u.faculty_id = f.id
+        where faculty_id = #{facultyId}
+    </select>
+
+    <select id="selectTeacherByExamResultId" resultType="com.example.examsprojectback.domain.Teacher">
+        select t.id, t.name, t.fname, t.surname
+        from  exams_results er
+                  left join teachers t on er.teacher_id = t.id
+        where er.id = #{id}
+    </select>
+
+    <insert id="insertTeacher" parameterType="com.example.examsprojectback.domain.Teacher">
+        insert into teachers(name, fname, surname, user_id)
+        values (#{name}, #{fname}, #{surname}, #{user.id})
+    </insert>
+
+    <update id="updateTeacher" parameterType="com.example.examsprojectback.domain.Teacher">
+        update teachers
+        set name=#{name},
+            fname=#{fname},
+            surname=#{surname},
+            user_id=#{user.id}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTeacher">
+        delete
+        from teachers
+        where id = #{teacherId}
+    </delete>
+</mapper>
